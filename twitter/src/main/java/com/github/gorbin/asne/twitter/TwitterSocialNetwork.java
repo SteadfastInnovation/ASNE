@@ -689,22 +689,28 @@ public class TwitterSocialNetwork extends OAuthSocialNetwork {
                 result.putBoolean(RESULT_POST_PHOTO, false);
             }
 
+            if (paramPhotoPath == null && args.containsKey(BUNDLE_PICTURE)) {
+                 paramPhotoPath = args.getString(BUNDLE_PICTURE);
+             }
+
             if (args.containsKey(BUNDLE_LINK)) {
                 paramLink = args.getString(BUNDLE_LINK);
 
                 result.putBoolean(RESULT_POST_LINK, true);
+
             } else {
                 result.putBoolean(RESULT_POST_LINK, false);
             }
 
             try {
+                if (paramLink != null) {
+                    paramMessage += " " + paramLink;
+                }
+
                 StatusUpdate status = new StatusUpdate(paramMessage);
 
                 if (paramPhotoPath != null) {
                     status.setMedia(new File(paramPhotoPath));
-                }
-                if (paramLink != null) {
-                    status = new StatusUpdate(paramMessage + " " + paramLink);
                 }
 
                 mTwitter.updateStatus(status);
@@ -740,6 +746,8 @@ public class TwitterSocialNetwork extends OAuthSocialNetwork {
 
             mLocalListeners.remove(requestID);
         }
+
+
 
         @Override
         protected void onCancelled() {
